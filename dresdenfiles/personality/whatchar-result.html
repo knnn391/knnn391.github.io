@@ -1,0 +1,198 @@
+<html> 
+<head> 
+<title>Which Dresden Files Character Are You?</title> 
+<LINK REL=StyleSheet HREF="contentcolors.css" TYPE="text/css"
+      MEDIA=screen> 
+ 
+<script type="text/javascript"> 
+ 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23333511-1']);
+  _gaq.push(['_trackPageview']);
+ 
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+ 
+</script> 
+ 
+</head> 
+<body> 
+ 
+<center> 
+<table height="20%"><tr><td></td></tr></table> 
+<table bordercolor=#434343 bgcolor=#764E4F border=3 cellpadding=5 
+       width="30%"><tr><td> 
+<center> 
+<p size=5 id="dfcharName" value=""> 
+</center> 
+<p id="dfcharDesc" value=""> 
+</td></tr></table> 
+<table height="20%"><tr><td></td></tr></table> 
+<table width="110"> 
+<tr><td style="vertical-align:bottom"> 
+<p id="matches" style="height:700px" value=""> 
+</td></tr> 
+</center> 
+</table> 
+</center> 
+ 
+<SCRIPT LANGUAGE="JavaScript"> 
+<!--
+var val_array = new Array();
+var max_array = new Array();
+ 
+ 
+var characters = [  ["Harry"    ,4,3,4,2,4,3,2,3,1,4],
+                    ["Murphy"   ,3,3,3,3,1,2,3,1,2,3],
+                    ["Marcone"  ,2,4,5,6,5,2,4,6,4,2],
+                    ["Thomas"   ,5,2,4,1,4,4,1,2,5,5],
+                    ["Molly"    ,3,6,2,4,3,1,3,5,2,4],
+                    ["Maeve"    ,2,5,1,3,5,5,4,4,6,1],
+                    ["Nicodemus",1,4,3,5,5,4,5,5,4,2],
+                    ["Charity"  ,3,2,2,3,2,1,3,2,3,3],
+                    ["Kincaid"  ,3,3,4,1,4,2,2,1,3,2],
+		    ["Butters"  ,3,1,5,6,4,2,4,3,2,2]
+                 ];
+ 
+var descriptions = [
+"You are a wizard of the \"not so subtle and quick to anger\" kind.  "+
+"A little bit of a romantic in your own way, you're always ready to "+
+"drop everything and lend a helping hand.",
+"A strong believer in law and order, you do your best to protect "+
+"those within your resposibility.  You tend to show your stern side "+
+"to others, revealing your emotions only to those close to you.",  
+"You are cold and calculating person who spends his energy pursuing his "+
+"own set of goals.  While you do have a personal code of honor, you "+
+"see no reason to conform to society's notions of what is right.  "+
+"You may go down in history as a monster, but you will do it on "+
+"your own terms.",
+"You are the epitomy of cool.  Everyone wants to be you.  You are"+
+" Flashy and \"in\", but underneath you are fiercely loyal those "+
+"those you love.",
+"You are an emotional person, and you sometimes find yourself doing"+
+" things on impulse, especially when friends and family are"+
+"concerned.  Flashy in some ways, quiet as a mouse in others, "+
+"you set your own trends and don't rely on other to tell you what "+
+"is cool.",
+"Beautiful and terrible as the Morn! Treacherous as the Seas! Stronger "+
+"than the foundations of the Earth! All shall love you and despair!",
+"You are a master manipulator and schemer who plays "+
+" for the *long* haul.  "+
+"Money and power are merely tools for your end goals.",
+"You are a good and caring person.  Religion is important "+
+"to you, but most of all family.  \"Hearth and home\".  "+
+"Those are the words you conjure by.",
+"You like being in the thick of things - where all the action "+
+"is.  You rely on your quick reflexes and ability to track "+
+"multiple targets to succeed.",
+"You are an intensly rational and smart person who just happens to "+
+"be passionate about things that are currently outside of mainstream social "+
+"acceptance.  \nFriends are important, who cares what other "+
+"people think.  Embrace your inner geek declare to the world:  \"POLKA WILL NEVER DIE!!!\""
+];
+ 
+ 
+ 
+function load_vals()
+{
+  var query = window.location.search.substring(1);
+  var parms = query.split(':');
+  for (var i=0; i<10; i++) 
+  {
+    val_array[i] = parms[i*2];
+    max_array[i] = parms[i*2+1];
+  }
+}
+function set_bestname(textbox, num)
+{
+  textbox.innerHTML = "<b><big><big><big>You are "+characters[num][0]+"</big></big></big></b><br/><br/>";
+}
+function set_bestdesc(textbox, num)
+{
+  textbox.innerHTML = descriptions[num];
+}
+ 
+function sortPair(a, b)
+{
+  return b[1]-a[1];
+}
+ 
+ 
+function set_matches(textbox, match_vector)
+{
+  var text = "<b>All correlations:</b><br/>";
+  var results = new Array();
+ 
+  for (var j=0;j<characters.length;j++)
+  {
+    results[j] = [characters[j][0], Math.ceil(100*match_vector[j]*match_vector[j]*match_vector[j])];
+  } 
+  results.sort(sortPair);
+  for (var j=0;j<results.length;j++)
+  {
+    text = text + results[j][0]+":"+results[j][1]+"%<br/>";
+  }
+  textbox.innerHTML = text;
+  return results;
+}
+ 
+ 
+function process()
+{
+  
+  
+  load_vals();
+  var maxdist = -1
+  var character_norms= [0,0,0,0,0,0,0,0,0,0];
+  var character_dist = [0,0,0,0,0,0,0,0,0,0];
+  var outchar = "";
+  var val_norm = 0;
+  for (var i=0;i<10;i++)
+  {
+    val_norm+=(val_array[i]*val_array[i])/(max_array[i]*max_array[i]);
+    for (var j=0;j<characters.length;j++)
+    {
+      character_norms[j]+=(characters[j][i+1]*characters[j][i+1])/(max_array[i]*max_array[i]);
+    }
+  }    
+  val_norm = Math.sqrt(val_norm);
+  for (var i=0;i<characters.length;i++)
+  {
+     character_norms[i] = Math.sqrt(character_norms[i]);
+  }
+  
+ 
+ 
+  for (i=0;i<characters.length;i++)
+  {
+    char = characters[i];
+    for (j=0;j<char.length-1;j++)
+    {
+      character_dist[i] = character_dist[i] + (characters[i][j+1]-val_array[j])/max_array[j]*(characters[i][j+1]-val_array[j])/max_array[j]*(55.0/(50.0+j));           
+   
+    }
+ 
+    character_dist[i] = 5.0/(character_dist[i] +5.0);
+    if (character_dist[i] > maxdist)
+    {
+      maxdist = character_dist[i];
+      outchar = i;
+    }
+  }
+  set_bestname(document.getElementById("dfcharName"), outchar);
+  set_bestdesc(document.getElementById("dfcharDesc"), outchar);
+  set_matches(document.getElementById("matches"), character_dist);
+ 
+}
+ 
+ 
+process();
+ 
+//window.onerror = err;
+// -->
+</SCRIPT> 
+ 
+</body></html> 
