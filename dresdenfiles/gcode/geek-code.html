@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>Dresden Files Geek Code</title>
+</head>
+<body>
+<LINK REL=StyleSheet HREF="contentcolors.css" TYPE="text/css" MEDIA=screen>
+
+
+ <SCRIPT LANGUAGE="JavaScript">
+<!--
+
+
+
+function process()
+{
+  var checked_vals= [0,0,0,0,0,0,0,0,0,0];
+  var f = document.f;
+  var max_vals =[f.jb.length,
+                 f.books.length,
+                 f.theory.length,
+                 f.external.length,
+                 f.wg.length,
+                 f.cowl.length,
+                 f.swords.length,
+                 f.rpg.length];
+
+ 
+  var i = 0;
+
+  for (i=0;i<f.jb.length;i++) if (f.jb[i].checked) checked_vals[0] = f.jb[i].value;
+  for (i=0;i<f.books.length;i++) if (f.books[i].checked) checked_vals[1] = f.books[i].value;
+  for (i=0;i<f.theory.length;i++) if (f.theory[i].checked) checked_vals[2] = f.theory[i].value;
+  for (i=0;i<f.external.length;i++) if (f.external[i].checked) checked_vals[3] = f.external[i].value;
+  for (i=0;i<f.wg.length;i++) if (f.wg[i].checked) checked_vals[4] = f.wg[i].value;
+  for (i=0;i<f.cowl.length;i++) if (f.cowl[i].checked) checked_vals[5] = f.cowl[i].value;
+  for (i=0;i<f.swords.length;i++) if (f.swords[i].checked) checked_vals[6] = f.swords[i].value;
+  for (i=0;i<f.rpg.length;i++) if (f.rpg[i].checked) checked_vals[7] = f.rpg[i].value;
+  
+  var params = "";
+  for (i=0;i<10;i++)
+  {
+    params = params + checked_vals[i]+":
+  }
+ 
+  location.href = "geek-code-result.html?"+params;
+}
+
+function err(msg, url, line)
+{
+  location.href = "error.html";
+}
+//window.onerror = err;
+// -->
+</SCRIPT>
+</head>
+<center>
+<table border="0" width="90%"><tr><td>
+
+<br><b>Dresden Files Geek Code</b><p>
+It had occured to me that with the various theories around the forum, that blah blah diverse all in one
+<p>
+
+<form name="f">
+<ol type=1>
+
+
+<p>
+<li><b>You are invited to a "black tie" party.  You attend the
+    party:</b><br>
+<input type="radio" name="invite" value="1">You always wear a
+specially tailored tuxedo.  No special effort needed to "dress up" for
+the party.<br>
+<input type="radio" name="invite" value="2">Dressed to the max and
+making everyone else envy you.<br>
+<input type="radio" name="invite" value="3">Wearing a rented tux -
+that's what the invitation said.<br>
+<input type="radio" name="invite" value="4">Wearing a black tie, but otherwise regular clothes.  Hey, the invitation only specified a
+black <i>tie</i>.<br>
+<input type="radio" name="invite" value="5">Wearing only black tie, but nothing else.<br>
+
+<p>
+<li><b>Someone at the party publicly insulted you.  You: </b> <br>
+<input type="radio" name="insult" value="1">Apologize and slip away.<br>
+<input type="radio" name="insult" value="2">Laugh it off.  You are
+*way* cooler than they are.<br>
+<input type="radio" name="insult" value="3">Fire back with a perfectly
+worded insult.<br>
+<input type="radio" name="insult" value="4">Say nothing and remember.
+Revenge is a dish best served cold.<br>
+<input type="radio" name="insult" value="5">Challenge the person to an
+immediate duel.<br>
+<input type="radio" name="insult" value="6">Charge at the person
+screaming incoherently to throw them off balance.<br>
+
+<p>
+<li><b>Which statement best describes your relationship with your mother?</b><br>
+<input type="radio" name="mother" value="1">I am scared of my mother.<br>
+<input type="radio" name="mother" value="2">I regularly fight with my mother.<br>
+<input type="radio" name="mother" value="3">My mother and I don't see eye
+to eye about various issues.<br>
+<input type="radio" name="mother" value="4">I wish I knew my mother better.<br>
+<input type="radio" name="mother" value="5">I am on good terms with my mother.<br>
+<input type="radio" name="mother" value="6">I love my mother.  She is
+the BEST.<br>
+
+<p>
+<li><b>In a Broadway production of "Harry Dresden the Musical", which of the following jobs would best suit you?</b><br>
+<input type="radio" name="broadway" value="1">Stuntman.<br>
+<input type="radio" name="broadway" value="2">Actor.<br>
+<input type="radio" name="broadway" value="3">Set Designer.<br>
+<input type="radio" name="broadway" value="4">Director.<br>
+<input type="radio" name="broadway" value="5">Writer.<br>
+
+<p>
+<li><b>A good friend is in trouble and you can help him if you break the Law:</b><br>
+<input type="radio" name="friendlaw" value="1">I'm sorry for my friend
+but the Law is too important to break.<br>
+<input type="radio" name="friendlaw" value="2">He's a good friend so
+I'd be willing to bend a minor law if it would really help.<br>
+<input type="radio" name="friendlaw" value="3">If he's a really good
+friend and it's not murder -- maybe.<br>
+<input type="radio" name="friendlaw" value="4">Friends are
+important.  If I need to break a law to help him, so be it.<br>
+<input type="radio" name="friendlaw" value="5">Dunno about the "good
+friend" bit, but laws are made to be broken.<br>
+
+
+<p>
+<li><b>You are invited to a wedding in a church and you feel:</b><br>
+<input type="radio" name="religion" value="1">Elated.  It is proper
+that a religious ceremony take place in a house of worship.<br>
+<input type="radio" name="religion" value="2">Indifferent.  You are
+happy for the couple.  Their choice of venue makes no difference.<br>
+<input type="radio" name="religion" value="3">Uneasy.  You're not
+sure how you feel about G-D.<br>
+<input type="radio" name="religion" value="4">Apprehensive.  You and
+G-D do not see eye to eye and you feel you are trespassing.<br>
+<input type="radio" name="religion" value="5">Angry.  Slavish adherence
+to religion is a source of misery in the world.  Someone needs to put
+a stop to this!<br>
+
+<p>
+<li><b>How planned out is your life (kudos if you recognize all the quotes)?</b><br>
+<input type="radio" name="plan" value="1">"I don't know. I'm just
+making this up as I go."<br>
+<input type="radio" name="plan" value="2">"Once, just once, I want things to go according to the gorram plan!" <br>
+<input type="radio" name="plan" value="3">"My plan is sheer elegance
+in its simplicity.  It could never fail."<br>
+<input type="radio" name="plan" value="4">"I love it when a plan
+comes together."<br>
+<input type="radio" name="plan" value="5">"Everything that has transpired has done so according to my design. It was I who allowed the Alliance to know the location of the shield generator."<br>
+
+
+<p>
+<li><b>Which of the following types of computer games do you prefer playing?</b><br>
+<input type="radio" name="game" value="1">First person shoot'em
+(e.g. Halo)<br>
+<input type="radio" name="game" value="2">Real-time RPG (e.g. Dragon Age)<br>
+<input type="radio" name="game" value="3">Real-time strategy (e.g. Starcraft)<br>
+<input type="radio" name="game" value="4">Turn-based strategy (e.g. Civilization)<br>
+<input type="radio" name="game" value="5">Government simulation game
+(e.g. Simcity)<br>
+
+<p>
+<li><b>Assuming money wasn't an issue, which of the following cars
+    would best suit you?</b><br>
+<input type="radio" name="car" value="1">An old Beetle or WWII jeep.<br>
+<input type="radio" name="car" value="2">Any non-distinct car.  I
+don't like standing out.<br>
+<input type="radio" name="car" value="3">An efficient hybrid.<br>
+<input type="radio" name="car" value="4">A Cadillac or some other type
+of limo.  Black.<br>
+<input type="radio" name="car" value="5">A Humvee, with separately
+heated seats.<br>
+<input type="radio" name="car" value="6">A Ferrari convertible.  In
+bright colors.<br>
+
+<p>
+<li><b>How do you feel about love and relationships?</b><br>
+<input type="radio" name="love" value="1">Love is a contagious
+disease.  It causes nothing but hurt in the world.<br>
+<input type="radio" name="love" value="2">Love is a delusion.  A
+mutually satisfactory partnership is the way to go.<br>
+<input type="radio" name="love" value="3">Love is an ideal not
+everyone manages to find.  Most people need to settle for something less.<br>
+<input type="radio" name="love" value="4">I am searching for romantic,
+fairy-tale love.  I am not interested in anything less.<br>
+<input type="radio" name="love" value="5">Twu Love is the most potent
+force in the world.  Love killed the dinosaurs!<p>
+
+<p>
+<input type="button" value="Who am I?" onclick="process();" style=color: #000000; border: 1 solid #000000">
+<Br>
+<br><br><p>
+
+
+</center>
+
+</td></tr></table>
+</center>
+</body></html>
