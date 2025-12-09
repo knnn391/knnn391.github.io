@@ -1,7 +1,9 @@
 <!doctype html> 
 <html> 
   <head> 
-    <meta charset="utf-8" /> 
+    <meta charset="utf-8" />
+    <!-- important for mobile coordinates / scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dresden Files Alchemy</title> 
     <script src="jquery-1.4.4.min.js"></script>
     <script src="jquery-ui-1.8.6.custom.min.js"></script>
@@ -99,10 +101,11 @@
       }
       $('#library').html(content);
       
-      $('.libbox').each(function(){
+      $('.libbox').each(function(){                                             //dodawanie zawartosci do boxow
         createBoxContent(this);
       });
-      $('.libbox').draggable({helper: "clone", scroll: false, 
+      // appendTo: 'body' helps helpers follow finger on mobile
+      $('.libbox').draggable({helper: "clone", appendTo: 'body', scroll: false, 
         stop: function(event,ui){
           if((ui.offset.top < height-265) || (ui.offset.left < width-libWidth-250))
           createNewTableBox($(this).attr('rel'),ui.offset,1,1);
@@ -118,14 +121,14 @@
       $('.libbox:last').fadeIn('slow');
       progress.push(id);
       saveProgress();
-      $('.libbox:last').draggable({helper: "clone", scroll: false,
+      $('.libbox:last').draggable({helper: "clone", appendTo: 'body', scroll: false,
         stop: function(event,ui){
           createNewTableBox($(this).attr('rel'),ui.offset,1,1);
         }
       });
     }
     
-    function createNewTableBox(id,position,lp,checkJustDropped)
+    function createNewTableBox(id,position,lp,checkJustDropped)                                  //lp zapobiega uduszeniu sie nawzajem bliźniaków
     {
       x=position.left+lp*30;
       y=position.top+lp*40;
@@ -140,26 +143,27 @@
       }
       else $('.tablebox:last').fadeIn('slow');
       
-      $('.tablebox:last').draggable({scroll: false, stop: function(event, ui){checkConnections(this);}});
+      // appendTo: 'body' so helper is not clipped by containers on mobile
+      $('.tablebox:last').draggable({appendTo: 'body', scroll: false, stop: function(event, ui){checkConnections(this);}});
     }
     
     function checkConnections(el1)
     {
       if(ifLeaveTable(el1))$(el1).fadeOut("normal",function(){$(el1).remove()});
       else{
-        el2=ifSex(el1);
-        kk=0;
-        if(el2!=0 && el2!=-1){
+        el2=ifSex(el1);                                                           //sprawdzenie czy el1 sie z kims puscil
+        kk=0;                                                                     //kolejny krasnoludek
+        if(el2!=0 && el2!=-1){                                                    //jesli sie puscil
           id1=$(el1).attr('rel');
           id2=$(el2).attr('rel');
-          children=sex(id1,id2);
+          children=sex(id1,id2);                                                  //sprawdzamy czy się przynajmniej dobrze zabezpieczyl
           len=children.length;
-          if(len>0){
+          if(len>0){                                                              //jezeli jednak nie
             position=$(el1).offset();
             for(i=0;i<len;i++){
                 kk++
                 if(kk==1)removeParents(el1,el2);
-                createNewTableBox(children[i],position,i,0);
+                createNewTableBox(children[i],position,i,0);                          //to tworzymy wszystkie jego dzieci
                 if(!include(progress,children[i])){
                   createNewLibraryBox(children[i]);
                 }
@@ -181,8 +185,8 @@
           y2=$(this).css("top").replace("px", "");
           
           if(Math.abs(x2-x1)<50 && Math.abs(y2-y1)<50){  
-            if(ret==0)ret=this;
-            else ret=-1;
+            if(ret==0)ret=this;                                                 //jezeli nic juz wczesniej nie zwracal to zwroc
+            else ret=-1;                                                        //inaczej powiedz ze za duzo
           }
         }
       });
@@ -350,7 +354,11 @@
       cursor:move;
       background:rgba(255,255,255,0.7);
       z-index:10;
-      -webkit-border-radius:10px;      
+      -webkit-border-radius:10px;
+      /* prevent browser touch actions (scroll/zoom) from interfering */
+      touch-action: none;
+      -ms-touch-action: none;
+      -webkit-user-drag: none;
     }
     
     .boxContent{
@@ -380,6 +388,9 @@
       z-index:20 !important;
       width:100px;
       height:110px;
+      touch-action: none;
+      -ms-touch-action: none;
+      -webkit-user-drag: none;
     }
     
     .ui-draggable-dragging{
@@ -538,70 +549,80 @@
   </div> 
   <div id="library"></div> 
 
-  <!-- ✅ ADD TOUCH SUPPORT FOR MOBILE DRAGGING -->
+  <!-- Stronger, pointer-ready touch→mouse polyfill for jQuery UI -->
   <script>
   (function($){
-    $.support.touch = 'ontouchend' in document;
+    // If browser supports Pointer Events, translate pointer events to mouse events for jQuery UI
+    if(window.PointerEvent){
+      var isDown = false;
+      function synthMouse(ev, type){
+        var e = document.createEvent('MouseEvents');
+        e.initMouseEvent(type, true, true, window, 1,
+          ev.screenX, ev.screenY, ev.clientX, ev.clientY,
+          !!ev.ctrlKey, !!ev.altKey, !!ev.shiftKey, !!ev.metaKey,
+          0, null);
+        ev.target.dispatchEvent(e);
+      }
+      document.addEventListener('pointerdown', function(ev){
+        // only handle primary button touches/pointers
+        if(ev.isPrimary) synthMouse(ev, 'mousedown'), isDown = true, ev.preventDefault();
+      }, true);
+      document.addEventListener('pointermove', function(ev){
+        if(isDown && ev.isPrimary) synthMouse(ev, 'mousemove'), ev.preventDefault();
+      }, true);
+      document.addEventListener('pointerup', function(ev){
+        if(ev.isPrimary) synthMouse(ev, 'mouseup'), isDown = false, ev.preventDefault();
+      }, true);
+      return;
+    }
 
-    if (!$.support.touch)
-        return;
+    // Otherwise fallback to touch events (older iOS/Android)
+    if(!('ontouchstart' in document)) return;
 
-    var mouseProto = $.ui.mouse.prototype,
-        _mouseInit = mouseProto._mouseInit,
-        _mouseDestroy = mouseProto._mouseDestroy,
-        touchHandled;
+    var mouseProto = $.ui.mouse && $.ui.mouse.prototype;
+    if(!mouseProto) return; // jQuery UI mouse not present
+
+    var _mouseInit = mouseProto._mouseInit, _mouseDestroy = mouseProto._mouseDestroy;
 
     function simulateMouseEvent(event, simulatedType) {
-        if (event.originalEvent.touches.length > 1)
-            return;
-
+        if (event.originalEvent.touches && event.originalEvent.touches.length > 1) return;
         event.preventDefault();
-
-        var touch = event.originalEvent.changedTouches[0],
-            simulatedEvent = document.createEvent('MouseEvents');
-
+        var touch = (event.originalEvent.changedTouches && event.originalEvent.changedTouches[0]) || event.originalEvent.touches[0];
+        var simulatedEvent = document.createEvent('MouseEvents');
         simulatedEvent.initMouseEvent(
             simulatedType, true, true, window, 1,
             touch.screenX, touch.screenY,
             touch.clientX, touch.clientY,
             false, false, false, false, 0, null
         );
-
         event.target.dispatchEvent(simulatedEvent);
     }
 
     mouseProto._touchStart = function(event) {
         var self = this;
-
-        if (touchHandled || !self._mouseCapture(event.originalEvent.changedTouches[0]))
-            return;
-
-        touchHandled = true;
+        // sanity check - only start if capture is ok
+        var touch = event.originalEvent.changedTouches[0];
+        if (!self._mouseCapture(touch)) return;
         self._touchMoved = false;
-
         simulateMouseEvent(event, 'mousedown');
-
-        $(document)
-            .on('touchmove', function(e) { self._touchMove(e); })
-            .on('touchend', function(e) { self._touchEnd(e); });
+        var moveHandler = function(e){ self._touchMove(e); };
+        var endHandler = function(e){ self._touchEnd(e); };
+        $(document).on('touchmove', moveHandler).on('touchend', endHandler);
+        // store handlers to remove later on destroy
+        this._touchHandlers = {move: moveHandler, end: endHandler};
     };
 
     mouseProto._touchMove = function(event) {
-        if (!touchHandled)
-            return;
-
         this._touchMoved = true;
         simulateMouseEvent(event, 'mousemove');
     };
 
     mouseProto._touchEnd = function(event) {
-        if (!touchHandled)
-            return;
-
         simulateMouseEvent(event, 'mouseup');
-
-        $(document).off('touchmove').off('touchend');
-        touchHandled = false;
+        if(this._touchHandlers){
+          $(document).off('touchmove', this._touchHandlers.move).off('touchend', this._touchHandlers.end);
+          this._touchHandlers = null;
+        }
     };
 
     mouseProto._mouseInit = function() {
