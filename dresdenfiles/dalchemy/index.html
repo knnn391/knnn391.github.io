@@ -18,12 +18,10 @@
     var connections2=new Array();
 
     $(document).ready(function(){
-      // Load data from embedded JavaScript instead of XML files
       genealogy = genealogyData;
       names = namesData;
       loadProgress();
       $('#options ul').css({marginLeft: -(($('#options ul').width())-($('#options span').width()))});
-      // Call init immediately since data is already loaded
       init();
     });
     
@@ -85,7 +83,6 @@
         drop: function(event, ui){
           $(ui.helper).fadeOut("normal",function(){$(ui.helper).remove()})
           $('#trash img').animate({height: 30, width: 25, marginTop: 120, marginLeft: 115}, "fast");}
-          
       });
       
       addLibraryContent();
@@ -102,7 +99,7 @@
       }
       $('#library').html(content);
       
-      $('.libbox').each(function(){                                             //dodawanie zawartosci do boxow
+      $('.libbox').each(function(){
         createBoxContent(this);
       });
       $('.libbox').draggable({helper: "clone", scroll: false, 
@@ -128,7 +125,7 @@
       });
     }
     
-    function createNewTableBox(id,position,lp,checkJustDropped)                                  //lp zapobiega uduszeniu sie nawzajem bliźniaków
+    function createNewTableBox(id,position,lp,checkJustDropped)
     {
       x=position.left+lp*30;
       y=position.top+lp*40;
@@ -150,19 +147,19 @@
     {
       if(ifLeaveTable(el1))$(el1).fadeOut("normal",function(){$(el1).remove()});
       else{
-        el2=ifSex(el1);                                                           //sprawdzenie czy el1 sie z kims puscil
-        kk=0;                                                                     //kolejny krasnoludek
-        if(el2!=0 && el2!=-1){                                                    //jesli sie puscil
+        el2=ifSex(el1);
+        kk=0;
+        if(el2!=0 && el2!=-1){
           id1=$(el1).attr('rel');
           id2=$(el2).attr('rel');
-          children=sex(id1,id2);                                                  //sprawdzamy czy się przynajmniej dobrze zabezpieczyl
+          children=sex(id1,id2);
           len=children.length;
-          if(len>0){                                                              //jezeli jednak nie
+          if(len>0){
             position=$(el1).offset();
             for(i=0;i<len;i++){
                 kk++
                 if(kk==1)removeParents(el1,el2);
-                createNewTableBox(children[i],position,i,0);                          //to tworzymy wszystkie jego dzieci
+                createNewTableBox(children[i],position,i,0);
                 if(!include(progress,children[i])){
                   createNewLibraryBox(children[i]);
                 }
@@ -184,8 +181,8 @@
           y2=$(this).css("top").replace("px", "");
           
           if(Math.abs(x2-x1)<50 && Math.abs(y2-y1)<50){  
-            if(ret==0)ret=this;                                                 //jezeli nic juz wczesniej nie zwracal to zwroc
-            else ret=-1;                                                        //inaczej powiedz ze za duzo
+            if(ret==0)ret=this;
+            else ret=-1;
           }
         }
       });
@@ -313,7 +310,6 @@
     function makePastConnections(gen)
     {
       if(gen==0){
-        // No old genealogy file to load - just initialize empty arrays
         connections1 = [];
         connections2 = [];
       }
@@ -459,7 +455,7 @@
     #options ul{
       list-style:none;
       width:350px;
-      margin:0; /* correct in document.ready */
+      margin:0;
       padding:15px 10px;
       background:#333;
       font-size:12px;
@@ -541,18 +537,85 @@
     <p></p>
   </div> 
   <div id="library"></div> 
-  <script type="text/javascript">
-  
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-1421335-29']);
-    _gaq.push(['_trackPageview']);
-  
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  
-  </script>   
+
+  <!-- ✅ ADD TOUCH SUPPORT FOR MOBILE DRAGGING -->
+  <script>
+  (function($){
+    $.support.touch = 'ontouchend' in document;
+
+    if (!$.support.touch)
+        return;
+
+    var mouseProto = $.ui.mouse.prototype,
+        _mouseInit = mouseProto._mouseInit,
+        _mouseDestroy = mouseProto._mouseDestroy,
+        touchHandled;
+
+    function simulateMouseEvent(event, simulatedType) {
+        if (event.originalEvent.touches.length > 1)
+            return;
+
+        event.preventDefault();
+
+        var touch = event.originalEvent.changedTouches[0],
+            simulatedEvent = document.createEvent('MouseEvents');
+
+        simulatedEvent.initMouseEvent(
+            simulatedType, true, true, window, 1,
+            touch.screenX, touch.screenY,
+            touch.clientX, touch.clientY,
+            false, false, false, false, 0, null
+        );
+
+        event.target.dispatchEvent(simulatedEvent);
+    }
+
+    mouseProto._touchStart = function(event) {
+        var self = this;
+
+        if (touchHandled || !self._mouseCapture(event.originalEvent.changedTouches[0]))
+            return;
+
+        touchHandled = true;
+        self._touchMoved = false;
+
+        simulateMouseEvent(event, 'mousedown');
+
+        $(document)
+            .on('touchmove', function(e) { self._touchMove(e); })
+            .on('touchend', function(e) { self._touchEnd(e); });
+    };
+
+    mouseProto._touchMove = function(event) {
+        if (!touchHandled)
+            return;
+
+        this._touchMoved = true;
+        simulateMouseEvent(event, 'mousemove');
+    };
+
+    mouseProto._touchEnd = function(event) {
+        if (!touchHandled)
+            return;
+
+        simulateMouseEvent(event, 'mouseup');
+
+        $(document).off('touchmove').off('touchend');
+        touchHandled = false;
+    };
+
+    mouseProto._mouseInit = function() {
+        this.element.on('touchstart', $.proxy(this, '_touchStart'));
+        _mouseInit.call(this);
+    };
+
+    mouseProto._mouseDestroy = function() {
+        this.element.off('touchstart', $.proxy(this, '_touchStart'));
+        _mouseDestroy.call(this);
+    };
+
+  })(jQuery);
+  </script>
+
   </body> 
 </html>
